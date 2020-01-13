@@ -1,9 +1,11 @@
+'use strict';
+
 const store = {
   items: [
-    { id: cuid(), name: 'apples', checked: false },
-    { id: cuid(), name: 'oranges', checked: false },
-    { id: cuid(), name: 'milk', checked: true },
-    { id: cuid(), name: 'bread', checked: false }
+    { id: cuid(), name: 'apples', checked: false, edit: false},
+    { id: cuid(), name: 'oranges', checked: false, edit: false},
+    { id: cuid(), name: 'milk', checked: true, edit: false },
+    { id: cuid(), name: 'bread', checked: false, edit: false }
   ],
   hideCheckedItems: false
 };
@@ -15,7 +17,7 @@ const generateItemElement = function (item) {
      <span class='shopping-item'>${item.name}</span>
     `;
   }
-
+  //add edit button to the html 
   return `
     <li class='js-item-element' data-item-id='${item.id}'>
       ${itemTitle}
@@ -25,6 +27,9 @@ const generateItemElement = function (item) {
         </button>
         <button class='shopping-item-delete js-item-delete'>
           <span class='button-label'>delete</span>
+        </button>
+        <button class='shopping-item-edit js-item-edit'>
+          <span class='button-label'>edit</span>
         </button>
       </div>
     </li>`;
@@ -63,7 +68,12 @@ const render = function () {
 };
 
 const addItemToShoppingList = function (itemName) {
-  store.items.push({ id: cuid(), name: itemName, checked: false });
+  store.items.push({ 
+    id: cuid(), 
+    name: itemName, 
+    checked: false, 
+    edit: false
+  });
 };
 
 const handleNewItemSubmit = function () {
@@ -126,6 +136,17 @@ const handleDeleteItemClicked = function () {
     render();
   });
 };
+function editItemName(id, newName) {
+  const foundItem = store.items.find(item => item.id === id);
+  console.log(`item name ${foundItem.name} changed to ${newName}`);
+  foundItem.name = newName; 
+}
+
+function toggleItemEdit(id) {
+  store.items.map((item, ids) => {
+    item.edit = (item.id === id ? !item.edit : false);
+  });
+}
 
 /**
  * Toggles the store.hideCheckedItems property
